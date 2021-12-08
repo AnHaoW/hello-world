@@ -9,21 +9,39 @@ public class Test {
         System.out.println(i);
         Hashtable hashtable = new Hashtable();
         hashtable.put("1","222");
-        System.out.println(hashtable.toString());
+        test();
     }
 
     public static void test(){
         HashMap hashMap = new HashMap();
         hashMap.put(1,"111");
+        hashMap.put(-1,"-1-1");
+        hashMap.put("hashMap","hashMap");
+        System.out.println(hashMap.toString());
         Hashtable hashtable = new Hashtable();
         hashtable.put(2,"222");
+        System.out.println(hashtable.toString());
         HashSet hashSet = new HashSet();
         hashSet.add("HashSet");
+        hashSet.add(2);
+        hashSet.add("AAA");
+        hashSet.add("");
+        hashSet.add("");
+        System.out.println(hashSet.iterator().next());
+        TreeSet treeSet = new TreeSet();
+        treeSet.add("treeSet");
         List arrayList = new ArrayList();
         arrayList.add("arrayList");
-        arrayList.set(2,"2arrayList");
+        arrayList.add("1arrayList");
+        arrayList.add("");
+        arrayList.add("");
+        arrayList.set(0,"0arrayList");
+        System.out.println(arrayList.toString());
         List linkedList = new LinkedList();
         linkedList.add("LinkedList");
+        linkedList.add(1);
+        List<String> stringList = new LinkedList<String>();
+        stringList.add("StringList");
     }
 
     public int myAtoi(String s) {
