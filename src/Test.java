@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Test {
     public static void main(String[] args) {
@@ -9,7 +7,23 @@ public class Test {
 //        int i = new Test().reverse(-1534);
         int i = new Test().MFGFmyAtoi(" 42");
         System.out.println(i);
-        System.out.println(Integer.MAX_VALUE);
+        Hashtable hashtable = new Hashtable();
+        hashtable.put("1","222");
+        System.out.println(hashtable.toString());
+    }
+
+    public static void test(){
+        HashMap hashMap = new HashMap();
+        hashMap.put(1,"111");
+        Hashtable hashtable = new Hashtable();
+        hashtable.put(2,"222");
+        HashSet hashSet = new HashSet();
+        hashSet.add("HashSet");
+        List arrayList = new ArrayList();
+        arrayList.add("arrayList");
+        arrayList.set(2,"2arrayList");
+        List linkedList = new LinkedList();
+        linkedList.add("LinkedList");
     }
 
     public int myAtoi(String s) {
