@@ -1,10 +1,13 @@
 package interview;
 
-public class Person implements Cloneable{
+import java.io.Serializable;
+
+public class Person implements Cloneable, Serializable {
     private int age;
     private String name;
 
     public Person(int age, String name) {
+        super();
         this.age = age;
         this.name = name;
     }
