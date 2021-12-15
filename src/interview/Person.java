@@ -1,6 +1,6 @@
 package interview;
 
-public class Person {
+public class Person implements Cloneable{
     private int age;
     private String name;
 
@@ -24,4 +24,15 @@ public class Person {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public Person clone(){
+        Person person = null;
+        try{
+            person =(Person) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return person;
+    }
+
 }
