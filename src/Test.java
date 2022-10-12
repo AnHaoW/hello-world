@@ -1,4 +1,7 @@
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 
 class ListNode {
     int val;
@@ -35,9 +38,37 @@ public class Test {
         ListNode listNode6 = new ListNode(1, listNode5);
         ListNode listNode = null;
 
-        System.out.println(test.mergeTwoLists(listNode1, listNode4).toString());
+        ConcurrentHashMap<String, Integer> ccmap = new ConcurrentHashMap<String,Integer>();
+        ccmap.put("qqq",111);
+        ReadWriteLock readWriteLock = null;
+        Lock lock= readWriteLock.writeLock();
+        lock.lock();
+        lock.unlock();
+        System.out.println(test.generateParenthesis(3));
     }
 
+    //22
+    public List<String> generateParenthesis(int n) {
+        List<String> Strings = new ArrayList<String>();
+        generateParenthesisDG(Strings,new StringBuilder(),0,0,n);
+        return Strings;
+    }
+    public void generateParenthesisDG(List<String> listStrings ,StringBuilder sb,int i,int j,int max) {
+        if(sb.length()==2*max){
+            listStrings.add(sb.toString());
+            return;
+        }
+        if(i<max){
+            sb.append('(');
+            generateParenthesisDG(listStrings,sb,i+1,j,max);
+            sb.delete(sb.length()-1,sb.length());
+        }
+        if(j<i){
+            sb.append(')');
+            generateParenthesisDG(listStrings,sb,i,j+1,max);
+            sb.delete(sb.length()-1,sb.length());
+        }
+    }
     //21
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
         ListNode l1 = list1;
