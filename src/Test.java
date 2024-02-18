@@ -28,47 +28,73 @@ public class Test {
 //        int i = new Test().MFGFmyAtoi(" 42");
         Test test = new Test();
 
-        int[] height = new int[]{0, 0, 0, -1000000000, -1000000000, -1000000000, -1000000000};
-
-        ListNode listNode1 = new ListNode(99);
-        ListNode listNode2 = new ListNode(-9, listNode1);
-        ListNode listNode3 = new ListNode(1, listNode2);
-        ListNode listNode4 = new ListNode(8);
-        ListNode listNode5 = new ListNode(5, listNode4);
-        ListNode listNode6 = new ListNode(1, listNode5);
-        ListNode listNode = null;
-
-        ConcurrentHashMap<String, Integer> ccmap = new ConcurrentHashMap<String,Integer>();
-        ccmap.put("qqq",111);
-        ReadWriteLock readWriteLock = null;
-        Lock lock= readWriteLock.writeLock();
-        lock.lock();
-        lock.unlock();
-        System.out.println(test.generateParenthesis(3));
+        int[] nums1 = new int[]{1, 3, 4, 9};
+        int[] nums2 = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int [][] intervals ={{1,3},{2,6},{8,10},{15,18}} ;
+        String s1 = "aa";
+        String s2 = "a*";
+        int [][] merge =  test.merge(intervals);
+//        System.out.println(Arrays.toString(merge[0]));
+        for(int [] a :merge){
+            System.out.println(Arrays.toString(a));
+        }
     }
 
+    //字节
+
+    public int[][] merge(int[][] intervals) {
+        //此处需要注意，这里是重写了compare方法，用来告诉sort函数是按照升序还是降序来进行排序。
+        Arrays.sort(intervals,new Comparator<>()
+        {
+            public int compare(int a[],int b[])
+            {
+                return a[0]-b[0];
+            }
+        });
+
+        List<int[]> path=new ArrayList<>();
+        int i=0;
+
+        while(i<intervals.length)
+        {
+            int leftBound=intervals[i][0];
+            int rightBound=intervals[i][1];
+            while(i<intervals.length-1 && intervals[i+1][0]<=rightBound)
+            {
+                i++;
+                rightBound=Math.max(intervals[i][1],rightBound);
+            }
+            path.add(new int[]{leftBound,rightBound});
+            i++;
+
+        }
+        return path.toArray(new int[0][]);
+
+    }
     //22
     public List<String> generateParenthesis(int n) {
         List<String> Strings = new ArrayList<String>();
-        generateParenthesisDG(Strings,new StringBuilder(),0,0,n);
+        generateParenthesisDG(Strings, new StringBuilder(), 0, 0, n);
         return Strings;
     }
-    public void generateParenthesisDG(List<String> listStrings ,StringBuilder sb,int i,int j,int max) {
-        if(sb.length()==2*max){
+
+    public void generateParenthesisDG(List<String> listStrings, StringBuilder sb, int i, int j, int max) {
+        if (sb.length() == 2 * max) {
             listStrings.add(sb.toString());
             return;
         }
-        if(i<max){
+        if (i < max) {
             sb.append('(');
-            generateParenthesisDG(listStrings,sb,i+1,j,max);
-            sb.delete(sb.length()-1,sb.length());
+            generateParenthesisDG(listStrings, sb, i + 1, j, max);
+            sb.delete(sb.length() - 1, sb.length());
         }
-        if(j<i){
+        if (j < i) {
             sb.append(')');
-            generateParenthesisDG(listStrings,sb,i,j+1,max);
-            sb.delete(sb.length()-1,sb.length());
+            generateParenthesisDG(listStrings, sb, i, j + 1, max);
+            sb.delete(sb.length() - 1, sb.length());
         }
     }
+
     //21
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
         ListNode l1 = list1;
@@ -101,7 +127,7 @@ public class Test {
             l2 = l2.next;
             result = result.next;
         }
-        while(l1!=null){
+        while (l1 != null) {
             result.next = l1;
             l1 = l1.next;
             result = result.next;
@@ -475,42 +501,71 @@ public class Test {
 
     //第十题
     public boolean isMatch(String s, String p) {
-        int len = s.length();
-        boolean flag = false;
-        for (int i = 0, j = 0; i < len; i++) {
-            if (i > 0 && s.charAt(i) != s.charAt(i - 1) && j > 0 && p.charAt(j - 1) != '*') {
-                flag = false;
-            }
-            for (; j < p.length(); ) {
-                if (p.charAt(j) == '.') {
-                    flag = true;
-                    j++;
-                    break;
-                } else if (p.charAt(j) == '*') {
-                    if (flag == true) {
-                        break;
-                    } else {
-                        j++;
+        int i = s.length();
+        int j = p.length();
+        boolean[][] result = new boolean[i + 1][j + 1];
+        //数组复制
+        result[0][0] = true;
+        for (int m = 0; m <= i; ++m) {
+            for (int n = 1; n <= j; ++n) {
+                if (p.charAt(n-1) == '*') {
+                    result[m][n] = result[m][n - 2];
+                    if (match(s, p, m, n - 1)) {
+                        result[m][n] = result[m][n] || result[m - 1][n];
                     }
                 } else {
-                    if (s.charAt(i) == p.charAt(j)) {
-                        flag = true;
-                        j++;
-                        break;
+                    if (match(s, p, m, n)) {
+                        result[m][n] = result[m - 1][n - 1];
+                    }
+                }
+            }
+        }
+        return result[i][j];
+
+    }
+
+    public boolean match(String s, String p, int i, int j) {
+        if (i == 0) {
+            return false;
+        }
+        if (p.charAt(j-1) == '.') {
+            return true;
+        }
+        return s.charAt(i - 1) == p.charAt(j - 1);
+    }
+    class Solution {
+        public boolean isMatch(String s, String p) {
+            int m = s.length();
+            int n = p.length();
+
+            boolean[][] f = new boolean[m + 1][n + 1];
+            f[0][0] = true;
+            for (int i = 0; i <= m; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    if (p.charAt(j - 1) == '*') {
+                        f[i][j] = f[i][j - 2];
+                        if (matches(s, p, i, j - 1)) {
+                            f[i][j] = f[i][j] || f[i - 1][j];
+                        }
                     } else {
-                        if (j == 0) {
-                            j++;
-                        } else {
-                            return false;
+                        if (matches(s, p, i, j)) {
+                            f[i][j] = f[i - 1][j - 1];
                         }
                     }
                 }
             }
-            if (j >= p.length() && i != len - 1) {
+            return f[m][n];
+        }
+
+        public boolean matches(String s, String p, int i, int j) {
+            if (i == 0) {
                 return false;
             }
+            if (p.charAt(j - 1) == '.') {
+                return true;
+            }
+            return s.charAt(i - 1) == p.charAt(j - 1);
         }
-        return true;
     }
 
 
@@ -616,6 +671,74 @@ public class Test {
                 combination.append(str.charAt(i));
                 backtrack(combinations, phoneMap, digits, index + 1, combination);
                 combination.deleteCharAt(combination.length() - 1);
+            }
+        }
+    }
+
+    //4
+//    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+//        int m = nums1.length, n = nums2.length;
+//        int s = m + n;
+//        int[] arr = new int[s];
+//        int i = 0, j = 0, k = 0;
+//        while (i < m && j < n && i + j <= s / 2) {
+//            if (nums1[i] >= nums2[j]) {
+//                arr[k++] = nums2[j++];
+//            } else {
+//                arr[k++] = nums1[i++];
+//            }
+//        }
+//        while (i == m && i + j <= s / 2) {
+//            arr[k++] = nums2[j++];
+//        }
+//        while (j == n && i + j <= s / 2) {
+//            arr[k++] = nums1[i++];
+//        }
+//        double result;
+//        if (s % 2 == 1) {
+//            result = arr[s / 2];
+//        } else {
+//            result = (arr[s / 2 - 1] + arr[s / 2]) / 2.0;
+//        }
+//        return result;
+//    }
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+        int s = m + n;
+        double result;
+        if (s % 2 == 1) {
+            result = findMedian(nums1, nums2, s / 2 + 1);
+            return result;
+        } else {
+            result = (findMedian(nums1, nums2, s / 2) + findMedian(nums1, nums2, s / 2 + 1)) / 2.0;
+            return result;
+        }
+
+    }
+
+    double findMedian(int[] nums1, int[] nums2, int k) {
+        int index1 = 0, index2 = 0;
+        int m = nums1.length, n = nums2.length;
+        while (true) {
+            if (m == index1) {
+                return nums2[index2 + k - 1];
+            }
+            if (n == index2) {
+                return nums1[index1 + k - 1];
+            }
+            if (k == 1) {
+                return Math.min(nums1[index1], nums2[index2]);
+            }
+
+            int half = k / 2;
+            int newIndex1 = Math.min(index1 + half, m) - 1;
+            int newIndex2 = Math.min(index2 + half, n) - 1;
+            if (nums1[newIndex1] <= nums2[newIndex2]) {
+                k -= newIndex1 - index1 + 1;
+                index1 = newIndex1 + 1;
+            } else {
+                k -= newIndex2 - index2 + 1;
+                index2 = newIndex2 + 1;
             }
         }
     }
