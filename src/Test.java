@@ -1,5 +1,7 @@
+import bean.SingletonEnum;
+
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -22,24 +24,245 @@ class ListNode {
 
 
 public class Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BrokenBarrierException, InterruptedException {
 //        String s=convert("AB",1);
 //        int i = new Test().reverse(-1534);
 //        int i = new Test().MFGFmyAtoi(" 42");
         Test test = new Test();
 
         int[] nums1 = new int[]{1, 3, 4, 9};
-        int[] nums2 = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Integer[] nums2 = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9,3,3,3,3,3};
         int [][] intervals ={{1,3},{2,6},{8,10},{15,18}} ;
-        String s1 = "aa";
+        String s1 = "aa bb cc aa";
         String s2 = "a*";
-        int [][] merge =  test.merge(intervals);
-//        System.out.println(Arrays.toString(merge[0]));
-        for(int [] a :merge){
-            System.out.println(Arrays.toString(a));
+        String[] strs = s1.split(" ");
+        System.out.println(Integer.MAX_VALUE);
+        List<Integer> list = test.aliList(Arrays.asList(nums2));
+        for(Integer i :list){
+            System.out.println(i);
+        }
+
+
+    }
+
+    //淘天
+    public  List<Integer> aliList(List<Integer> list){
+        List<Integer> list1 = new ArrayList<Integer>();
+        List<Integer> list2 = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<Integer>();;;
+        for(int i=0;i<list.size();i++){
+            if(list.get(i)%2==0){
+                list1.add(list.get(i));//偶数
+            }else {
+                list2.add(list.get(i));//奇数
+            }
+        }
+        Integer [] nums1 = list1.toArray(new Integer[list1.size()]);
+        Arrays.sort(nums1,(o1,o2) -> o2-o1);//倒序
+        Integer [] nums2 = list2.toArray(new Integer[list2.size()]);
+        Arrays.sort(nums2,(o1,o2) -> o2-o1);
+        Collections.addAll(result,nums2);
+        Collections.addAll(result,nums1);
+        for(int i=0;i<result.size();i++){
+            if(result.get(i)%3==0 && result.get(i)!=0){
+                result.remove(i);
+                i--;
+            }
+        }
+        return result;
+    }
+
+    public void printALI() throws BrokenBarrierException, InterruptedException {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+
+        for(int i=0;i<100;i++){
+
+            Thread thread1 = new Thread(){
+                @Override
+                public void run(){
+                    System.out.println("A");
+                    try {
+                        cyclicBarrier.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            };
+            thread1.start();
+            TimeUnit.MILLISECONDS.sleep(10);
+            Thread thread2 = new Thread(){
+                @Override
+                public void run(){
+                    System.out.println("L");
+                    try {
+                        cyclicBarrier.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            };
+            thread2.start();
+            TimeUnit.MILLISECONDS.sleep(10);
+            Thread thread3 = new Thread(){
+                @Override
+                public void run(){
+                    System.out.println("I");
+                    try {
+                        cyclicBarrier.await(10, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            };
+//            thread1.start();
+//            thread2.start();
+            thread3.start();
+            TimeUnit.MILLISECONDS.sleep(10);
+            cyclicBarrier.reset();
         }
     }
 
+
+
+    //od1
+    public void od1(){
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        int sum= in.nextInt();
+        String[][] all = new String[sum][sum];
+        String[] firstp = in.next().split(",");
+        String[] result = new String[sum];
+        String[] result2 = new String[sum];
+        String[] result3 = new String[sum];
+
+        for(int i=0;i<sum;i++){
+            all[i] = in.next().split(",");
+        }
+        int k=0;
+        for(int i=0;i<sum;i++) {
+            for(int j=0;j<sum;j++){
+                if(all[i][j].equals("1") && i!=j){
+                    for(int l=0;l<firstp.length;l++){
+                        if(String.valueOf(i).equals(firstp[l])){
+                            result[k++]=String.valueOf(j);
+                        }
+                    }
+                }
+            }
+        }
+        int v=0;
+        int m=0;
+        for(String str:firstp){
+            if(str!=null){
+                result2[v++] = str;
+            }
+        }
+        for(String str:result){
+            if(str!=null){
+                result2[v++] = str;
+                result3[m++] = str;
+            }
+        }
+        result=new String[sum];
+
+        while (result3[0]!=null){
+            k=0;
+            for(int i=0;i<sum;i++) {
+                for(int j=0;j<sum;j++){
+                    if(all[i][j].equals("1") && i!=j){
+                        for(int l=0;l<result3.length;l++){
+                            if(String.valueOf(i).equals(result3[l])){
+                                for(int b=0;b<result2.length;b++){
+                                    if(String.valueOf(j).equals(result2[b])){
+                                        break;
+                                    }
+                                    if(b==result2.length-1)
+                                    result[k++]=String.valueOf(j);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            m=0;
+            result3 =new String[sum];
+            for(String str:result){
+                if(str!=null){
+                    result2[v++] = str;
+                    result3[m++] = str;
+                }
+            }
+            result=new String[sum];
+        }
+        int r=0;
+        for(String str:result2){
+            if(str!=null){
+                r++;
+            }
+        }
+        r = r-firstp.length;
+        System.out.println(r);
+    }
+    //od2
+    public void od2(){
+        Scanner in = new Scanner(System.in);
+        // 注意 hasNext 和 hasNextLine 的区别
+        int a = in.nextInt();
+        String[] strs = new String[a];
+        for (int i = 0; i < a; i++) {
+            strs[i] = in.next();
+        }
+        String chars = in.next();
+        int result = 0 ,flag=0,index=-1;
+        int [] r = new int[a];
+        for (int i = 0; i < a; i++) {
+            String s = new String(chars);
+            flag = 0;
+            int clen = s.length();
+            for (int j = 0; j < strs[i].length(); j++) {
+                index = -1;
+                for (int k = 0; k < clen; k++) {
+                    if (strs[i].charAt(j) == s.charAt(k)) {
+                        s=s.replaceFirst(strs[i].substring(j, j + 1), "");
+                        clen--;
+                        break;
+                    }
+                    if(s.charAt(k) == '?' && index == -1){
+                        index = k;
+                    }
+                    if(k==s.length()-1){
+                        if(index==-1){
+                            flag=1;
+                            break;
+                        }
+                        else{
+                            chars = chars.replaceFirst("\\?","");
+                            s = s.replaceFirst("\\?","");;
+//                            chars.replaceFirst(chars.substring(index, index + 1),"");
+                            clen--;
+                        }
+                    }
+                }
+                if(flag==1)
+                    break;
+            }
+            if(flag==0){
+                result++;
+            }
+        }
+        System.out.print(result);
+    }
     //字节
 
     public int[][] merge(int[][] intervals) {
